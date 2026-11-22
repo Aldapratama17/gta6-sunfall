@@ -20,10 +20,18 @@ import { buildDossier } from './vendor/makefun-game.ts';
 const here = fileURLToPath(new URL('.', import.meta.url));
 const out = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 
+console.log("Sunfall City — bundling entry...");
+
 mkdirSync(out, { recursive: true });
 cpSync(join(here, 'game'), join(out, 'game'), { recursive: true });
-mkdirSync(join(out, 'screenshots'), { recursive: true });
-if (existsSync(join(here, 'screenshots'))) cpSync(join(here, 'screenshots'), join(out, 'screenshots'), { recursive: true });
+
+const screenshotsSrc = join(here, 'screenshots');
+const screenshotsDst = join(out, 'screenshots');
+if (!existsSync(screenshotsSrc)) {
+  mkdirSync(screenshotsSrc, { recursive: true });
+}
+mkdirSync(screenshotsDst, { recursive: true });
+cpSync(screenshotsSrc, screenshotsDst, { recursive: true });
 
 // The scorer's own caps (reference/gate.json): only text_max_bytes shapes the bytes; the others refuse an entry the
 // scorer would refuse (more than 4 screenshots or one over 256 KiB; more than 993 files in game/ or 48 MiB of game
